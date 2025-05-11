@@ -154,8 +154,8 @@ IM_WIDTH = 256
 file = st.file_uploader("📤 Upload MRI Image (PNG/JPG)", type=["png", "jpg"])
 
 if file is not None:
-    st.header("🖼️ Original Image:")
-    st.image(file, caption="Uploaded MRI Image", use_column_width=True)
+    st.header("Uploaded Image:")
+    st.image(file, caption="Uploaded MRI Image", use_container_width=True)
 
     # Convert uploaded file to OpenCV image
     content = file.getvalue()
@@ -167,13 +167,36 @@ if file is not None:
     img_normalized = img_resized / 255.0  # Normalize pixel values
     img_input = np.expand_dims(img_normalized, axis=0)  # Add batch dimension
 
-    # Prediction Button
+    # # Prediction Button
+    # if st.button("🔍 Predict Segmentation"):
+    #     with st.spinner("Processing... 🔄"):
+    #         pred_img = model.predict(img_input)[0]  # Get single output image
+    #         pred_img = np.squeeze(pred_img)  # Remove batch dimension
+    #         pred_img = (pred_img * 255).astype(np.uint8)  # Convert to uint8
+            
+    #         # Display Predicted Segmentation
+    #         st.header("📌 Predicted Segmentation:")
+    #         st.image(pred_img, caption="Segmented MRI", use_container_width=True)
+    
     if st.button("🔍 Predict Segmentation"):
         with st.spinner("Processing... 🔄"):
-            pred_img = model.predict(img_input)[0]  # Get single output image
-            pred_img = np.squeeze(pred_img)  # Remove batch dimension
-            pred_img = (pred_img * 255).astype(np.uint8)  # Convert to uint8
+            pred_img = model.predict(img_input)[0]  # Shape: (256, 256, 1)
+            pred_img = np.squeeze(pred_img)  # Shape: (256, 256)
             
-            # Display Predicted Segmentation
-            st.header("📌 Predicted Segmentation:")
-            st.image(pred_img, caption="Segmented MRI", use_column_width=True)
+            # Threshold prediction for binary mask
+            threshold = 0.5
+            binary_mask = (pred_img > threshold).astype(np.uint8) * 255
+
+            # Optional overlay
+            # overlay = cv2.addWeighted(img_resized, 0.7, cv2.cvtColor(binary_mask, cv2.COLOR_GRAY2RGB), 0.3, 0)
+
+            # Display in two columns
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.subheader("Original Image")
+                st.image(img_resized, use_container_width=True)
+
+            with col2:
+                st.subheader("Predicted Segmentation")
+                st.image(binary_mask, use_container_width=True)
