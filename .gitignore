@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Data files (too large for Git)
+Data/
+*.hdf5
+*.h5
+*.pkl
+*.pickle
+
+# Model checkpoints
+*.weights.h5
+checkpoints/
+models/
+
+# Large datasets
+*.csv
+*.zip
+*.tar.gz
+*.tif
+*.tiff
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
